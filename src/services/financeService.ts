@@ -1,10 +1,10 @@
-// financeService.ts
 import {
   getTotalSpendingByCategory,
   getBiggestExpense,
   getMerchantSpending,
   getMonthlySpending,
-  getCategoryBreakdown,
+  getCategoryBreakdown, hasRentDataInApril2025,
+  getRecurringSubscriptions,
 
 } from "../tools/transactionTool.js";
 
@@ -78,7 +78,10 @@ export const answerQuestion = async (
     }
 
     // Amazon Spending
-    if (q.includes("amazon")) {
+    if (
+      q.includes("amazon") ||
+      q.includes("amzn")
+    ) {
       const total =
         await getMerchantSpending(
           "amazon"
@@ -90,7 +93,10 @@ export const answerQuestion = async (
     }
 
     // Apollo Spending
-    if (q.includes("apollo")) {
+    if (
+      q.includes("apollo") ||
+      q.includes("apollo pharmacy")
+    ) {
       const total =
         await getMerchantSpending(
           "apollo"
@@ -100,7 +106,6 @@ export const answerQuestion = async (
         2
       )} at Apollo Pharmacy.`;
     }
-
     // Netflix Spending
     if (q.includes("netflix")) {
       const total =
@@ -113,6 +118,22 @@ export const answerQuestion = async (
       )} on Netflix.`;
     }
 
+
+
+    // Transfers
+    if (
+      q.includes("transfer") ||
+      q.includes("transferred")
+    ) {
+      const total =
+        await getTotalSpendingByCategory(
+          "transfer"
+        );
+
+      return `You transferred ₹${total.toFixed(
+        2
+      )}.`;
+    }
     // Portfolio Value
     if (
       q.includes("portfolio") ||
@@ -141,6 +162,53 @@ export const answerQuestion = async (
       )}.`;
     }
 
+    if (
+      q.includes("rent") &&
+      q.includes("april") &&
+      q.includes("2025")
+    ) {
+
+      const count =
+        await hasRentDataInApril2025();
+
+      if (count === 0) {
+        return "No rent data found for April 2025.";
+      }
+
+      return `Found ${count} rent transactions in April 2025.`;
+    }
+
+    if (
+      q.includes("transport") &&
+      q.includes("spend")
+    ) {
+      const total =
+        await getTotalSpendingByCategory(
+          "transport"
+        );
+
+      return `You spent ₹${total.toFixed(
+        2
+      )} on transport.`;
+    }
+    if (
+      q.includes("subscription") ||
+      q.includes("recurring")
+    ) {
+
+      const subscriptions =
+        await getRecurringSubscriptions();
+
+      if (
+        subscriptions.length === 0
+      ) {
+        return "No recurring subscriptions found.";
+      }
+
+      return `Potential recurring subscriptions: ${subscriptions
+        .map((s) => s.merchant)
+        .join(", ")}`;
+    }
 
     if (
       q.includes("category breakdown")
@@ -154,6 +222,20 @@ export const answerQuestion = async (
         null,
         2
       );
+    }
+
+    if (
+      q.includes("groceries") &&
+      q.includes("spend")
+    ) {
+      const total =
+        await getTotalSpendingByCategory(
+          "groceries"
+        );
+
+      return `You spent ₹${total.toFixed(
+        2
+      )} on groceries.`;
     }
     return "Sorry, I could not understand the question.";
   } catch (error) {

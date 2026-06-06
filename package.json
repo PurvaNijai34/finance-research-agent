@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "mastra dev",
+   "dev": "mastra dev",
     "build": "mastra build",
-    "start": "mastra start",
+    "start": "tsx src/server.ts",
     "server": "tsx src/server.ts"
   },
   "keywords": [],
