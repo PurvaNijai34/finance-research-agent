@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "mastra dev",
     "build": "mastra build",
-    "start": "mastra start"
+    "start": "mastra start",
+    "server": "tsx src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,11 +25,17 @@
     "@mastra/loggers": "^1.1.2",
     "@mastra/memory": "^1.20.2",
     "@mastra/observability": "^1.14.1",
+    "@types/pg": "^8.20.0",
+    "axios": "^1.17.0",
+    "express": "^5.2.1",
+    "pg": "^8.21.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^25.9.1",
     "mastra": "^1.12.2",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
 }

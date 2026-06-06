@@ -8,3 +8,21 @@ dist
 *.db-* 
 .netlify 
 .vercel 
+
+
+
+# Database files
+*.db
+*.db-*
+*.duckdb
+*.duckdb.*
+
+# Mastra
+.mastra/
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.*
