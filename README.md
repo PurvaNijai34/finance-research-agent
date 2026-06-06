@@ -2,27 +2,52 @@
 
 ## Overview
 
-Finance Research Agent is an AI-powered financial assistant built using Mastra, PostgreSQL, Express.js, and Groq LLM.
+Finance Research Agent is an AI-powered financial assistant built using Mastra, PostgreSQL, Express.js, TypeScript, and Groq LLM.
 
-The system loads financial transaction, holdings, and mutual fund NAV data into PostgreSQL and allows users to ask natural language finance questions.
+The system ingests financial transactions, mutual fund data, and holdings into PostgreSQL and allows users to ask natural language finance questions.
 
-The AI Agent (Tara Finance Agent) processes user questions, uses finance tools to fetch data from PostgreSQL, and returns accurate financial insights.
+The Tara Finance Agent uses Mastra tools to query PostgreSQL and return accurate financial insights.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Architecture](#architecture)
+- [Environment Variables](#environment-variables)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Data Ingestion](#data-ingestion)
+- [Run Mastra Studio](#run-mastra-studio)
+- [Run API Server](#run-api-server)
+- [API Endpoint](#api-endpoint)
+- [Evaluation](#evaluation)
+- [Supported Questions](#supported-questions)
+- [Sample Output](#sample-output)
+- [Deployment](#deployment)
+- [Future Improvements](#future-improvements)
+- [Author](#author)
 
 ---
 
 # Features
 
 - AI Finance Agent (Tara)
-- PostgreSQL Database Integration
 - Mastra Agent Framework
+- PostgreSQL Integration
 - Data Ingestion Pipeline
-- Portfolio Value Calculation
 - Spending Analysis
 - Merchant Spending Analysis
-- Monthly Spending Analysis
 - Category Breakdown Analysis
+- Monthly Spending Analysis
+- Portfolio Value Calculation
 - REST API Endpoint
-- Mastra Studio Integration
+- Evaluation Script
+- Mastra Studio Support
+- Render Deployment Ready
 
 ---
 
@@ -40,7 +65,7 @@ The AI Agent (Tara Finance Agent) processes user questions, uses finance tools t
 
 ## Database
 
-- PostgreSQL
+- PostgreSQL (Neon)
 
 ## LLM
 
@@ -51,12 +76,13 @@ The AI Agent (Tara Finance Agent) processes user questions, uses finance tools t
 # Project Structure
 
 ```text
-master/
+finance-research-agent/
 │
 ├── data/
 │
 ├── scripts/
-│   └── ingest.ts
+│   ├── ingest.ts
+│   └── eval.ts
 │
 ├── src/
 │   │
@@ -88,52 +114,65 @@ master/
 │
 ├── .env
 ├── package.json
-└── README.md
+├── README.md
+└── DESIGN.md
 ```
 
 ---
 
 # Architecture
 
+```text
 User Question
-↓
+      │
+      ▼
 Express API (/ask)
-↓
+      │
+      ▼
 Tara Finance Agent
-↓
+      │
+      ▼
 Finance Tool
-↓
+      │
+      ▼
+Finance Service
+      │
+      ▼
 PostgreSQL Database
-↓
+      │
+      ▼
 Response Returned
+```
 
 ---
 
 # Environment Variables
 
-Create a `.env` file in the root directory.
+Create a `.env` file:
 
 ```env
-APP_PORT=your_app_port
+APP_PORT=3000
 
 DATABASE_URL=your_postgresql_connection_string
 
 GROQ_API_KEY=your_groq_api_key
 
 DATA_DIR=./data/sample_a
+
+API_BASE_URL=http://localhost:3000/api
 ```
 
 ---
 
 # Installation
 
-Clone the repository:
+Clone repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/PurvaNijai34/finance-research-agent.git
 ```
 
-Move into the project directory:
+Move into project:
 
 ```bash
 cd finance-research-agent
@@ -149,7 +188,7 @@ npm install
 
 # Database Setup
 
-Create PostgreSQL tables:
+Create tables:
 
 ```bash
 npx tsx src/db/createTables.ts
@@ -159,10 +198,16 @@ npx tsx src/db/createTables.ts
 
 # Data Ingestion
 
-Load sample financial data:
+Load default dataset:
 
 ```bash
 npx tsx scripts/ingest.ts
+```
+
+Load custom dataset:
+
+```bash
+DATA_DIR=./data/sample_x npx tsx scripts/ingest.ts
 ```
 
 Expected Output:
@@ -184,25 +229,21 @@ Data Ingestion Completed Successfully
 npm run dev
 ```
 
-Open:
-
-```text
-http://localhost:4111
-```
-
 ---
 
-# Run Express API Server
+# Run API Server
 
 ```bash
 npm run server
 ```
 
-Open:
+API Base URL:
 
 ```text
 http://localhost:3000
 ```
+
+> **Note:** Use either `npm run dev` (Mastra Studio) or `npm run server` (Express API) depending on what you want to test.
 
 ---
 
@@ -228,113 +269,93 @@ http://localhost:3000
 
 ---
 
-
 # Evaluation
 
-The project includes an automated evaluation script:
+Run evaluation suite:
 
 ```bash
 npx tsx scripts/eval.ts
-
 ```
 
+The evaluation script:
 
-# Sample Questions
+- Sends multiple questions to `/ask`
+- Validates responses
+- Prints pass/fail summary
+- Displays failed cases
 
-### Spending Questions
+---
+
+# Supported Questions
+
+## Spending Analysis
 
 - How much did I spend on food?
 - How much did I spend on travel?
 - How much did I spend on health?
+- How much did I spend on groceries?
+- How much did I spend on transport?
 
-### Merchant Questions
+## Merchant Analysis
 
 - How much did I spend on Amazon?
+- How much did I spend using AMZN?
 - How much did I spend on Netflix?
 - How much did I spend at Apollo Pharmacy?
 
-### Portfolio Questions
+## Portfolio Analysis
 
 - What is my portfolio value?
 
-### Expense Questions
+## Expense Analysis
 
 - What was my biggest expense?
 
-### Monthly Analysis
+## Monthly Analysis
 
 - How much did I spend in March 2025?
 
-### Category Analysis
+## Category Analysis
 
 - Show category breakdown
+
+## No Data Cases
+
+- Do I have any rent data in April 2025?
 
 ---
 
 # Sample Output
 
-Food Spending
+## Food Spending
 
 ```text
 You spent ₹118770.47 on food.
 ```
 
-Portfolio Value
+## Portfolio Value
 
 ```text
 Your portfolio value is ₹119983.80.
 ```
 
-Biggest Expense
+## Biggest Expense
 
 ```text
 Your biggest expense was ₹34774.89 at NEFT/RENT/HDFC on 3/3/2025.
 ```
 
-Category Breakdown
+---
+
+# Deployment
+
+Application is deployed on Render.
+
+Production API:
 
 ```text
-travel: ₹1363136.09
-transfer: ₹888279.48
-rent: ₹472284.88
-shopping: ₹457526.92
-utilities: ₹228995.41
-health: ₹168166.37
-food: ₹118770.47
+https://finance-research-agent-073i.onrender.com
 ```
-
----
-
-# Key Components
-
-## Tara Finance Agent
-
-Responsible for:
-
-- Understanding user questions
-- Calling finance tools
-- Returning accurate financial answers
-
----
-
-## Finance Tool
-
-Responsible for:
-
-- Executing financial queries
-- Accessing PostgreSQL data
-- Returning structured answers
-
----
-
-## PostgreSQL Database
-
-Stores:
-
-- Transactions
-- Funds
-- Fund NAV History
-- Holdings
 
 ---
 
@@ -343,15 +364,19 @@ Stores:
 - Expense Forecasting
 - Investment Recommendations
 - RAG Integration
-- Vector Database Search
+- Vector Search
 - Multi-Agent Architecture
-- Real-time Market Data
+- Real-Time Market Data
 - User Authentication
 
 ---
 
 # Author
 
-Purva Nijai
+**Purva Nijai**
 
-Backend Developer
+### - 💼 GitHub: [PurvaNijai34](https://github.com/PurvaNijai34)
+
+### - 🔗 LinkedIn: https://www.linkedin.com/in/purva-nijai-6041002a5/
+
+### - 📧 Email: purvanijai05@gmail.com
