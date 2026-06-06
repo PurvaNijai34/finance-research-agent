@@ -7,6 +7,9 @@ app.use(express.json());
 
 app.use("", askRoute);
 
+app.get("/",()=>{
+  console.log("Finance-Reseach-agnet server is running")
+})
 
 const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, () => {
